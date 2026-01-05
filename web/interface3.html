@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thermal Insight - Cooling Time Surface</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="logo">Thermal Insight</div>
+      <div class="nav-section">
+        <h3>Navigation</h3>
+        <div class="nav-links">
+          <a href="interface2.html">Interface 2</a>
+          <a href="interface3.html" class="active">Interface 3</a>
+        </div>
+      </div>
+      <div class="nav-section">
+        <h3>Quick Actions</h3>
+        <div class="nav-links">
+          <a href="#">Load Dataset</a>
+          <a href="#">Run Simulation</a>
+          <a href="#">Export Report</a>
+        </div>
+      </div>
+    </aside>
+
+    <header>
+      <div class="header-title">
+        <div class="badge">Cooling time</div>
+        <h1>Response surface</h1>
+      </div>
+      <div class="action-row">
+        <button class="secondary" id="resetBtn">Reset view</button>
+        <button id="refreshBtn">Refresh surface</button>
+      </div>
+    </header>
+
+    <main>
+      <div class="panel">
+        <h2>Cooling time as a function of ρ·Cp and k</h2>
+        <p class="summary">The central panel reuses the second interface layout while introducing a 3D response surface for the cooling time model.</p>
+        <div class="surface-wrapper">
+          <div id="surfacePlot" class="plot-container"></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Model assumptions</h2>
+        <div class="info-grid">
+          <div class="tag">ρ·Cp range: 800 – 2200 kJ/m³·K</div>
+          <div class="tag">k range: 0.2 – 1.6 W/m·K</div>
+          <div class="tag">Cooling time units: minutes</div>
+          <div class="tag">Model: conduction dominated</div>
+        </div>
+        <footer>Adjust the ranges in the script if you want to test other materials or boundary conditions.</footer>
+      </div>
+    </main>
+
+    <aside>
+      <div class="panel">
+        <h3>Interpretation guide</h3>
+        <div class="summary">
+          <p>Higher ρ·Cp values typically slow cooling because more energy is stored per degree of temperature change.</p>
+          <p>A higher conductivity k accelerates cooling by improving heat flux through the material.</p>
+          <p>The surface combines these effects to highlight the minimum cooling band (darker region).</p>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Key observations</h3>
+        <div class="summary">
+          <p><span class="highlight">Ridge at low k:</span> Poor conductivity dominates and cooling time spikes.</p>
+          <p><span class="highlight">Valley at moderate k:</span> Optimal balance between capacity and conduction.</p>
+          <p><span class="highlight">Plateau at high ρ·Cp:</span> Material mass overwhelms conductive gains.</p>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    const rhoCpRange = { min: 800, max: 2200, steps: 28 };
+    const kRange = { min: 0.2, max: 1.6, steps: 28 };
+
+    function generateVector(min, max, steps) {
+      const values = [];
+      const step = (max - min) / (steps - 1);
+      for (let i = 0; i < steps; i++) {
+        values.push(Number((min + i * step).toFixed(3)));
+      }
+      return values;
+    }
+
+    function coolingTime(rhoCp, k) {
+      const conductionFactor = rhoCp / (k * 1300);
+      const convectivePenalty = 4 * Math.exp(-k * 0.9);
+      const texture = Math.sin(rhoCp / 260) * 0.6;
+      return conductionFactor + convectivePenalty + texture + 2;
+    }
+
+    function createSurface() {
+      const rhoCp = generateVector(rhoCpRange.min, rhoCpRange.max, rhoCpRange.steps);
+      const kVals = generateVector(kRange.min, kRange.max, kRange.steps);
+      const z = rhoCp.map((cp) => kVals.map((k) => Number(coolingTime(cp, k).toFixed(3))));
+
+      const data = [
+        {
+          type: 'surface',
+          x: rhoCp,
+          y: kVals,
+          z,
+          colorscale: 'Teal',
+          showscale: true,
+          colorbar: {
+            title: 'Cooling time (min)',
+            tickformat: '.1f'
+          },
+          contours: {
+            z: {
+              show: true,
+              usecolormap: true,
+              highlightcolor: '#1f9cbf',
+              project: { z: true }
+            }
+          }
+        }
+      ];
+
+      const layout = {
+        title: 'Response surface',
+        paper_bgcolor: 'transparent',
+        plot_bgcolor: 'transparent',
+        scene: {
+          xaxis: {
+            title: 'ρ·Cp (kJ/m³·K)',
+            backgroundcolor: 'rgba(15,37,56,0.65)',
+            gridcolor: '#1f9cbf33',
+            zerolinecolor: '#1f9cbf55'
+          },
+          yaxis: {
+            title: 'k (W/m·K)',
+            backgroundcolor: 'rgba(15,37,56,0.65)',
+            gridcolor: '#1f9cbf33',
+            zerolinecolor: '#1f9cbf55'
+          },
+          zaxis: {
+            title: 'Cooling time (min)',
+            backgroundcolor: 'rgba(15,37,56,0.65)',
+            gridcolor: '#1f9cbf33',
+            zerolinecolor: '#1f9cbf55'
+          },
+          camera: {
+            eye: { x: 1.9, y: 1.2, z: 1.1 }
+          }
+        },
+        margin: { l: 0, r: 0, b: 0, t: 10 },
+        autosize: true,
+      };
+
+      Plotly.newPlot('surfacePlot', data, layout, { responsive: true });
+    }
+
+    document.getElementById('refreshBtn').addEventListener('click', createSurface);
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      Plotly.Plots.resize('surfacePlot');
+    });
+
+    window.addEventListener('resize', () => Plotly.Plots.resize('surfacePlot'));
+
+    createSurface();
+  </script>
+</body>
+</html>
