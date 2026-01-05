@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simform - Cooling Interface</title>
+  <style>
+    :root {
+      --teal: #0b7c87;
+      --light-gray: #f6f6f6;
+      --muted-gray: #6e6e6e;
+      --border: #d8d8d8;
+      --accent: #0b7c87;
+      --card: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--light-gray);
+      color: #1c1c1c;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      background: #0a5f66;
+      color: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 20px;
+    }
+
+    .brand img {
+      width: 28px;
+      height: 28px;
+    }
+
+    nav {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      font-size: 14px;
+    }
+
+    .nav-link {
+      color: #e6f3f5;
+      text-decoration: none;
+      position: relative;
+      padding-bottom: 4px;
+    }
+
+    .nav-link.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -6px;
+      height: 3px;
+      background: #f59d15;
+      border-radius: 6px;
+    }
+
+    .meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 14px;
+    }
+
+    .pill {
+      padding: 6px 12px;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 260px 1fr 320px;
+      gap: 16px;
+      padding: 16px 24px;
+      min-height: calc(100vh - 64px);
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    }
+
+    .sidebar {
+      padding: 16px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      color: var(--muted-gray);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .section-title .status {
+      color: #c77b00;
+      font-weight: 600;
+    }
+
+    .job-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fdfdfd;
+    }
+
+    .job-icon {
+      width: 24px;
+      height: 24px;
+      background: #ffe8c5;
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      color: #d07c00;
+      font-weight: 700;
+    }
+
+    .job-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .job-name {
+      font-weight: 600;
+    }
+
+    .job-subtitle {
+      color: var(--muted-gray);
+      font-size: 13px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .btn {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: #2d2d2d;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .btn.primary {
+      background: #0f8c99;
+      color: white;
+      border-color: #0c7883;
+    }
+
+    .canvas-shell {
+      background: var(--card);
+      border: 1px dashed #cfd7de;
+      border-radius: 14px;
+      min-height: 540px;
+      display: grid;
+      place-items: center;
+      color: var(--muted-gray);
+      font-size: 14px;
+    }
+
+    .detail {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--muted-gray);
+      font-size: 15px;
+    }
+
+    .detail-header .title {
+      font-weight: 600;
+      color: #2d2d2d;
+    }
+
+    .detail-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .detail-item {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fbfbfb;
+    }
+
+    .detail-item .label {
+      font-weight: 600;
+      color: #2d2d2d;
+    }
+
+    .detail-item .subtext {
+      color: var(--muted-gray);
+      font-size: 13px;
+    }
+
+    .nested-list {
+      margin-left: 14px;
+      padding-left: 14px;
+      border-left: 2px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    label {
+      font-size: 13px;
+      color: var(--muted-gray);
+    }
+
+    input[type="number"],
+    select {
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <img src="https://static-00.iconduck.com/assets.00/snowflake-icon-512x512-hs871g7h.png" alt="Logo" aria-hidden="true" />
+      simform
+    </div>
+    <nav>
+      <a class="nav-link active" href="#">Projects</a>
+      <a class="nav-link" href="#">Help</a>
+    </nav>
+    <div class="meta">
+      <span class="pill">Evaluation RT <small style="opacity:0.8; font-weight:600;">Evaluation II</small></span>
+      <span>604 Credits</span>
+      <span>👤 Arnaud</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <aside class="sidebar card">
+      <div class="section-title">
+        <span>Jobs</span>
+        <span class="status">Not submitted</span>
+      </div>
+      <div class="job-card">
+        <div class="job-icon">F</div>
+        <div class="job-info">
+          <div class="job-name">Feasibility</div>
+          <div class="job-subtitle">Analyse préliminaire</div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn">Setup</button>
+        <button class="btn primary">Submit Job</button>
+      </div>
+    </aside>
+
+    <section class="card canvas-shell">
+      <div>Preview area for the second interface</div>
+    </section>
+
+    <section class="card detail">
+      <div class="detail-header">
+        <span class="title">Plastic Part</span>
+        <span class="pill" style="color:#888; background:#f1f6f7; border-color:#dbe7ea;">12 elements</span>
+      </div>
+      <div class="detail-list">
+        <div class="detail-item">
+          <div>
+            <div class="label">Runners</div>
+            <div class="subtext">12 elements</div>
+          </div>
+          <span>+</span>
+        </div>
+        <div class="nested-list">
+          <div class="detail-item">
+            <div>
+              <div class="label">Frozen layer thickness</div>
+              <div class="subtext">0 elements</div>
+            </div>
+            <div class="subtext">+</div>
+          </div>
+          <div class="detail-item">
+            <div>
+              <div class="label">Cooling time</div>
+              <div class="subtext">0 elements</div>
+            </div>
+            <div class="subtext">+</div>
+          </div>
+          <div class="detail-item">
+            <div class="input-group">
+              <label for="target-cooling-time">Target cooling time (s)</label>
+              <input id="target-cooling-time" type="number" name="targetCoolingTime" min="0" step="0.1" placeholder="Enter target time" />
+            </div>
+          </div>
+          <div class="detail-item">
+            <div class="input-group">
+              <label for="tool-material">Tool material</label>
+              <select id="tool-material" name="toolMaterial">
+                <option value="" disabled selected>Select material</option>
+                <option value="H13">H13</option>
+                <option value="P20">P20</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
