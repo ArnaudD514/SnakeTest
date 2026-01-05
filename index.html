@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simform Projects</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">S</div>
+      <span class="brand-name">simform</span>
+    </div>
+    <nav class="nav-links">
+      <a href="#" class="active">Projects</a>
+      <a href="#">Help</a>
+    </nav>
+    <div class="user-summary">
+      <div class="avatar" aria-label="User avatar">
+        <span>A</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="page-head">
+      <div class="title-row">
+      <div class="title">
+        <div class="title-icon" aria-hidden="true"></div>
+        <h1>Projects</h1>
+      </div>
+      <div class="project-pill">
+        <span class="pill-name">Channel Design Project</span>
+      </div>
+    </div>
+      <div class="controls">
+        <div class="control">
+          <label class="control-label" for="searchInput">Search Projects</label>
+          <div class="input-wrap">
+            <span class="input-icon" aria-hidden="true">🔍</span>
+            <input id="searchInput" type="search" placeholder="Search projects" />
+          </div>
+        </div>
+        <div class="control">
+          <label class="control-label" for="attributeFilter">Filter</label>
+          <select id="attributeFilter">
+            <option value="all">All Attributes</option>
+          </select>
+        </div>
+        <div class="control">
+          <label class="control-label" for="userFilter">Users</label>
+          <select id="userFilter">
+            <option value="all">All</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <section class="project-list" id="projectList" aria-live="polite"></section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
