@@ -1,35 +1,30 @@
 const projects = [
   {
     name: 'Channel Design Project',
-    credits: 20,
     attributes: ['Design', 'Brand'],
     user: 'Arnaud',
     updated: 'Today',
   },
   {
     name: 'Material Library',
-    credits: 12,
     attributes: ['Research', 'Material'],
     user: 'Isha',
     updated: 'Yesterday',
   },
   {
     name: 'Onboarding Flows',
-    credits: 8,
     attributes: ['Product', 'UX'],
     user: 'Arnaud',
     updated: '2 days ago',
   },
   {
     name: 'Sales Dashboard',
-    credits: 15,
     attributes: ['Analytics', 'Growth'],
     user: 'Priya',
     updated: '1 week ago',
   },
   {
     name: 'Mobile Patterns',
-    credits: 10,
     attributes: ['Design', 'Mobile'],
     user: 'Luca',
     updated: '3 days ago',
@@ -40,8 +35,6 @@ const searchInput = document.getElementById('searchInput');
 const attributeFilter = document.getElementById('attributeFilter');
 const userFilter = document.getElementById('userFilter');
 const projectList = document.getElementById('projectList');
-const creditAmount = document.getElementById('creditAmount');
-const activeProjectCredits = document.getElementById('activeProjectCredits');
 
 function hydrateFilters() {
   const attributeSet = new Set();
@@ -94,9 +87,9 @@ function renderProjects(filteredProjects = projects) {
     const tag = document.createElement('span');
     tag.className = 'tag';
     tag.textContent = project.name.charAt(0);
-    const credits = document.createElement('span');
-    credits.textContent = `${project.credits} credits`;
-    badge.append(tag, credits);
+    const details = document.createElement('span');
+    details.textContent = `${project.attributes.length} attributes`;
+    badge.append(tag, details);
 
     header.append(name, badge);
 
@@ -141,20 +134,9 @@ function filterProjects() {
   renderProjects(filtered);
 }
 
-function initCredits() {
-  const totalCredits = projects.reduce((sum, project) => sum + project.credits, 0);
-  creditAmount.textContent = totalCredits;
-
-  const active = projects.find((project) => project.name === 'Channel Design Project');
-  if (active) {
-    activeProjectCredits.textContent = `${active.credits} Credits`;
-  }
-}
-
 function init() {
   hydrateFilters();
   renderProjects();
-  initCredits();
 
   searchInput.addEventListener('input', filterProjects);
   attributeFilter.addEventListener('change', filterProjects);
