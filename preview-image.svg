@@ -1,0 +1,16 @@
+<svg width="800" height="520" viewBox="0 0 800 520" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Cooling interface preview</title>
+  <desc id="desc">Stylized purple plastic component with a central disc, arms, and a blue cone.</desc>
+  <rect width="800" height="520" fill="white"/>
+  <ellipse cx="400" cy="330" rx="260" ry="110" fill="#4c1fba"/>
+  <rect x="140" y="310" width="60" height="60" rx="12" fill="#4c1fba"/>
+  <rect x="600" y="310" width="60" height="60" rx="12" fill="#4c1fba"/>
+  <circle cx="140" cy="355" r="26" fill="#4c1fba"/>
+  <circle cx="180" cy="370" r="26" fill="#4c1fba"/>
+  <circle cx="620" cy="355" r="26" fill="#4c1fba"/>
+  <circle cx="660" cy="370" r="26" fill="#4c1fba"/>
+  <polygon points="400,90 350,310 450,310" fill="#1b54d3"/>
+  <rect x="530" y="170" width="170" height="100" rx="16" fill="#4c1fba"/>
+  <rect x="530" y="270" width="40" height="90" rx="12" fill="#4c1fba"/>
+  <rect x="660" y="270" width="40" height="90" rx="12" fill="#4c1fba"/>
+</svg>
