@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cooling Time Surface</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+</head>
+<body>
+  <div class="page">
+    <header class="top-bar">
+      <div class="brand">Thermal Insight</div>
+      <nav class="nav">
+        <a class="nav-link" href="#">Interface 1</a>
+        <a class="nav-link active" href="interface3.html">Cooling Surface</a>
+      </nav>
+      <div class="top-actions">
+        <button id="resetBtn" class="secondary">Reset view</button>
+        <button id="refreshBtn">Refresh surface</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <aside class="panel inputs">
+        <div class="panel-header">
+          <h2>Inputs</h2>
+          <p class="muted">Use the same layout as the second interface with updated field names.</p>
+        </div>
+        <form id="controls" class="form-grid">
+          <label>
+            <span>ρ·Cp min (kJ/m³·K)</span>
+            <input type="number" step="10" id="rhoMin" value="800" />
+          </label>
+          <label>
+            <span>ρ·Cp max (kJ/m³·K)</span>
+            <input type="number" step="10" id="rhoMax" value="2200" />
+          </label>
+          <label>
+            <span>ρ·Cp steps</span>
+            <input type="number" min="5" max="80" id="rhoSteps" value="28" />
+          </label>
+          <label>
+            <span>k min (W/m·K)</span>
+            <input type="number" step="0.05" id="kMin" value="0.2" />
+          </label>
+          <label>
+            <span>k max (W/m·K)</span>
+            <input type="number" step="0.05" id="kMax" value="1.6" />
+          </label>
+          <label>
+            <span>k steps</span>
+            <input type="number" min="5" max="80" id="kSteps" value="28" />
+          </label>
+        </form>
+        <div class="hint">Adjust the ranges to test materials and regenerate the response surface.</div>
+      </aside>
+
+      <main class="panel main-panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Cooling time</p>
+            <h1>Response surface</h1>
+          </div>
+          <div class="legend">
+            <span class="badge">Output: minutes</span>
+          </div>
+        </div>
+        <p class="muted">Cooling time as a function of ρ·Cp and k. The interface mirrors the second layout while focusing the center area on the response surface.</p>
+        <div class="plot-shell">
+          <div id="surfacePlot" class="plot"></div>
+        </div>
+      </main>
+
+      <aside class="panel insights">
+        <h3>Interpretation</h3>
+        <ul>
+          <li><strong>ρ·Cp ↑:</strong> more stored energy, slower cooling.</li>
+          <li><strong>k ↑:</strong> higher conductivity, faster cooling.</li>
+          <li><strong>Band of minima:</strong> balance between capacity and conduction.</li>
+        </ul>
+
+        <div class="divider"></div>
+
+        <h4>Surface summary</h4>
+        <dl class="summary-list" id="summaryList">
+          <div><dt>ρ·Cp range</dt><dd>800 – 2200 kJ/m³·K</dd></div>
+          <div><dt>k range</dt><dd>0.2 – 1.6 W/m·K</dd></div>
+          <div><dt>Min cooling time</dt><dd id="minTime">—</dd></div>
+          <div><dt>Max cooling time</dt><dd id="maxTime">—</dd></div>
+        </dl>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    const formatNumber = (value, digits = 2) => Number.parseFloat(value).toFixed(digits);
+
+    function generateVector(min, max, steps) {
+      const values = [];
+      const step = (max - min) / (steps - 1);
+      for (let i = 0; i < steps; i += 1) {
+        values.push(Number((min + i * step).toFixed(4)));
+      }
+      return values;
+    }
+
+    function coolingTime(rhoCp, k) {
+      const conductionFactor = rhoCp / (k * 1300);
+      const convectivePenalty = 4 * Math.exp(-k * 0.9);
+      const texture = Math.sin(rhoCp / 260) * 0.6;
+      return conductionFactor + convectivePenalty + texture + 2;
+    }
+
+    function readInputs() {
+      return {
+        rho: {
+          min: Number(document.getElementById('rhoMin').value),
+          max: Number(document.getElementById('rhoMax').value),
+          steps: Number(document.getElementById('rhoSteps').value),
+        },
+        k: {
+          min: Number(document.getElementById('kMin').value),
+          max: Number(document.getElementById('kMax').value),
+          steps: Number(document.getElementById('kSteps').value),
+        },
+      };
+    }
+
+    function updateSummary(rhoRange, kRange, zValues) {
+      document.querySelector('#summaryList dd:nth-of-type(1)').textContent =
+        `${formatNumber(rhoRange.min, 0)} – ${formatNumber(rhoRange.max, 0)} kJ/m³·K`;
+      document.querySelector('#summaryList dd:nth-of-type(2)').textContent =
+        `${formatNumber(kRange.min, 2)} – ${formatNumber(kRange.max, 2)} W/m·K`;
+
+      const flat = zValues.flat();
+      const minVal = Math.min(...flat);
+      const maxVal = Math.max(...flat);
+      document.getElementById('minTime').textContent = `${formatNumber(minVal, 2)} min`;
+      document.getElementById('maxTime').textContent = `${formatNumber(maxVal, 2)} min`;
+    }
+
+    function createSurface() {
+      const { rho, k } = readInputs();
+      const rhoCp = generateVector(rho.min, rho.max, rho.steps);
+      const kVals = generateVector(k.min, k.max, k.steps);
+      const z = rhoCp.map((cp) => kVals.map((kVal) => Number(coolingTime(cp, kVal).toFixed(3))));
+
+      const trace = {
+        type: 'surface',
+        x: rhoCp,
+        y: kVals,
+        z,
+        colorscale: 'Viridis',
+        showscale: true,
+        colorbar: { title: 'Cooling time (min)' },
+        contours: {
+          z: { show: true, usecolormap: true, project: { z: true } },
+        },
+      };
+
+      const layout = {
+        title: false,
+        margin: { l: 10, r: 10, b: 10, t: 10 },
+        paper_bgcolor: 'transparent',
+        plot_bgcolor: 'transparent',
+        scene: {
+          xaxis: { title: 'ρ·Cp (kJ/m³·K)' },
+          yaxis: { title: 'k (W/m·K)' },
+          zaxis: { title: 'Cooling time (min)' },
+        },
+      };
+
+      Plotly.newPlot('surfacePlot', [trace], layout, { responsive: true });
+      updateSummary(rho, k, z);
+    }
+
+    document.getElementById('refreshBtn').addEventListener('click', (event) => {
+      event.preventDefault();
+      createSurface();
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', (event) => {
+      event.preventDefault();
+      document.getElementById('controls').reset();
+      createSurface();
+    });
+
+    window.addEventListener('resize', () => Plotly.Plots.resize('surfacePlot'));
+
+    createSurface();
+  </script>
+</body>
+</html>
