@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SimForm Cooling Feasibility</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+</head>
+<body>
+  <header class="hero">
+    <div>
+      <p class="eyebrow">SimForm</p>
+      <h1>Cooling Feasibility Sandbox</h1>
+      <p class="subtitle">
+        Upload a CAD part, set your cooling target, and explore how thermal
+        properties shape feasibility.
+      </p>
+      <div class="inputs-row">
+        <label class="input-block">
+          <span>Target cooling time (s)</span>
+          <input id="targetTime" type="number" min="1" step="0.1" value="40" />
+        </label>
+        <label class="input-block">
+          <span>Tool material</span>
+          <select id="toolMaterial">
+            <option>H13</option>
+            <option>P20</option>
+          </select>
+        </label>
+        <button id="runButton" class="primary">Update curves</button>
+      </div>
+    </div>
+    <div class="upload-card">
+      <p class="upload-title">Plastic part CAD</p>
+      <label class="upload-drop" for="cadUpload">
+        <input id="cadUpload" type="file" accept=".stl,.step,.step,.igs,.iges,.png,.jpg,.jpeg" hidden />
+        <span class="upload-icon">⤒</span>
+        <span class="upload-text">Drop a CAD file to preview</span>
+      </label>
+      <div class="preview">
+        <img id="previewImage" alt="Part preview" />
+        <p id="previewName" class="preview-name">No file selected</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="content">
+    <section class="card-grid">
+      <div class="card">
+        <h3>Feasibility analyses</h3>
+        <div class="analysis">
+          <div>
+            <p class="pill">Min condition</p>
+            <p>rho.Cp = <strong id="minRhoCp">1200</strong>, k = <strong id="minK">0.15</strong></p>
+          </div>
+          <p class="cooling">Predicted cooling: <strong id="minCooling">35 s</strong></p>
+        </div>
+        <div class="analysis">
+          <div>
+            <p class="pill">Max condition</p>
+            <p>rho.Cp = <strong id="maxRhoCp">2900</strong>, k = <strong id="maxK">0.45</strong></p>
+          </div>
+          <p class="cooling">Predicted cooling: <strong id="maxCooling">50 s</strong></p>
+        </div>
+        <div class="factors">
+          <p>Estimated factors</p>
+          <p>a (rho.Cp influence): <strong id="factorA"></strong></p>
+          <p>b (k influence): <strong id="factorB"></strong></p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Response surface</h3>
+        <p class="muted">Predicted cooling time as a function of rho.Cp and k.</p>
+        <div id="surfacePlot" class="plot"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="curve-header">
+        <div>
+          <h3>Cooling-time target curve</h3>
+          <p class="muted">For the requested cooling time, feasible rho.Cp values across k.</p>
+        </div>
+        <div class="chip" id="toolChip">Tool: H13</div>
+      </div>
+      <div id="isoPlot" class="plot"></div>
+    </section>
+  </main>
+
+  <template id="placeholderSvg">
+    <svg viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg" fill="none">
+      <defs>
+        <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#e0f2ff" />
+          <stop offset="100%" stop-color="#c2e9ff" />
+        </linearGradient>
+      </defs>
+      <rect x="20" y="30" width="360" height="180" rx="18" fill="url(#grad)" stroke="#0b5cff" stroke-width="4" />
+      <rect x="70" y="70" width="260" height="100" rx="14" fill="#f5fbff" stroke="#0b5cff" stroke-width="3" />
+      <rect x="130" y="95" width="140" height="50" rx="10" fill="#0b5cff" opacity="0.14" />
+      <path d="M80 140h240" stroke="#0b5cff" stroke-width="6" stroke-linecap="round" />
+      <path d="M110 110h180" stroke="#0b5cff" stroke-width="6" stroke-linecap="round" />
+      <circle cx="100" cy="170" r="10" fill="#0b5cff" />
+      <circle cx="300" cy="170" r="10" fill="#0b5cff" />
+      <text x="200" y="35" text-anchor="middle" font-size="16" fill="#0b5cff" font-family="'Inter', sans-serif">Plastic part CAD</text>
+    </svg>
+  </template>
+
+  <script src="script.js"></script>
+</body>
+</html>
