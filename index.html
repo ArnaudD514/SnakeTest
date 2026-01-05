@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simform Projects</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">S</div>
+      <span class="brand-name">simform</span>
+    </div>
+    <nav class="nav-links">
+      <a href="#" class="active">Projects</a>
+      <a href="#">Help</a>
+    </nav>
+    <div class="user-summary">
+      <div class="avatar" aria-label="User avatar">
+        <span>A</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="page-head">
+      <div class="title-row">
+      <div class="title">
+        <div class="title-icon" aria-hidden="true"></div>
+        <h1>Projects</h1>
+      </div>
+      <div class="project-pill">
+        <span class="pill-name">Channel Design Project</span>
+      </div>
+    </div>
+      <div class="controls">
+        <div class="control">
+          <label class="control-label" for="searchInput">Search Projects</label>
+          <div class="input-wrap">
+            <span class="input-icon" aria-hidden="true">🔍</span>
+            <input id="searchInput" type="search" placeholder="Search projects" />
+          </div>
+        </div>
+        <div class="control">
+          <label class="control-label" for="attributeFilter">Filter</label>
+          <select id="attributeFilter">
+            <option value="all">All Attributes</option>
+          </select>
+        </div>
+        <div class="control">
+          <label class="control-label" for="userFilter">Users</label>
+          <select id="userFilter">
+            <option value="all">All</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <section class="project-list" id="projectList" aria-live="polite"></section>
+  </main>
+
+  <main class="evaluation-page">
+    <section class="evaluation-header">
+      <div class="breadcrumb">
+        <span class="crumb">Evaluation RT</span>
+        <span class="pill">Evaluation #1</span>
+      </div>
+      <div class="actions">
+        <button class="ghost">Setup</button>
+        <button class="primary" disabled>Submit Job</button>
+      </div>
+    </section>
+
+    <section class="evaluation-body">
+      <aside class="jobs-panel">
+        <header class="jobs-header">
+          <div class="jobs-title">Jobs</div>
+          <div class="status-chip">Not submitted</div>
+        </header>
+        <div class="job-card">
+          <div class="job-title-row">
+            <div class="job-step">Feasibility</div>
+            <span class="job-meta">Updated 13 days ago</span>
+          </div>
+          <div class="job-name">Analyse préliminaire</div>
+        </div>
+      </aside>
+
+      <section class="workspace">
+        <div class="workspace-canvas" aria-label="Design canvas"></div>
+        <div class="workspace-sidebar">
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">Mold Material</div>
+            </div>
+            <select class="panel-select" aria-label="Select mold material">
+              <option>Select Material</option>
+            </select>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">Plastic Part</div>
+              <div class="panel-actions">
+                <button aria-label="Collapse or expand panel" class="icon-btn">⋮</button>
+              </div>
+            </div>
+
+            <button class="accordion">
+              <span class="accordion-icon">+</span>
+              <span>Runners</span>
+              <span class="count-pill">0 elements</span>
+            </button>
+
+            <button class="accordion">
+              <span class="accordion-icon">+</span>
+              <span>Configure Hot Runners</span>
+              <span class="count-pill">1 element</span>
+            </button>
+
+            <div class="field">
+              <label for="coolingTime">Target cooling time</label>
+              <div class="input-box">
+                <input id="coolingTime" type="number" min="0" step="0.1" placeholder="Enter time" />
+                <span class="unit">s</span>
+              </div>
+            </div>
+
+            <button class="accordion">
+              <span class="accordion-icon">+</span>
+              <span>i</span>
+              <span>Gates</span>
+              <span class="count-pill">0 elements</span>
+            </button>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
